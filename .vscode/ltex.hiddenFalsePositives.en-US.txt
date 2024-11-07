@@ -1,1 +1,0 @@
-{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThe naive bayes algorithm performed comparatively worse than the other two models, with a balanced accuracy of only 81%, an F1 score of 68%, a precision of 89%, and a recall of 62%.\\E$"}
