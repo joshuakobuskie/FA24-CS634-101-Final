@@ -17,8 +17,8 @@
 
 # %% [markdown]
 # *Your final term project documentation must clearly indicate the algorithms and dataset you used in the project.*  
-# The classification algorithms that I have chosen to implement and evaluate in this project are the Random Forest Classifier, the Convolutional 1D network, and the naive Bayes algorithm.  
-# The dataset I have chosen to use in this project is KDDCup99 dataset from the Scikit-learn real world datasets. This dataset contains TCP network connection data with about 5 million training records and 2 million test records. Each record is labelled as normal, or as a specific attack type. To ensure that this data will meet the criteria for binary classification used in this project, the data will be separated into 2 classes of either normal or attack, rather than the specific classes of attacks detailed within the dataset. This also models the intention of the dataset by prioritizing attack detection rather than attack type identification. This is evident as the training data contains 24 types of attack, but the test data contains an additional 14 types of attacks not previously seen in the training data. By attempting to identify attacks rather than attack types, this will test the models' ability to detect known, and unknown attacks based on their understanding of normal network data. The models I will implement will be able to classify records as either normal TCP network connection data or abnormal TCP network connection data indicative of an attack.
+# The classification algorithms that I have chosen to implement and evaluate in this project are the Random Forest Classifier, the Convolutional 1D network, and the naive Bayes algorithm. 
+# The dataset I have chosen to use in this project is the KDDCup99 dataset from the Scikit-learn real world datasets. This dataset contains TCP network connection data with about 5 million training records and 2 million test records. Each record is labeled as normal, or as a specific attack type. To ensure that this data will meet the criteria for binary classification used in this project, the data will be separated into 2 classes of either normal or attack, rather than the specific classes of attacks detailed within the dataset. This also models the intention of the dataset by prioritizing attack detection rather than attack type identification. This is evident as the training data contains 24 types of attack, but the test data contains an additional 14 types of attacks not previously seen in the training data. By attempting to identify attacks rather than attack types, this will test the models' ability to detect known, and unknown attacks based on their understanding of normal network data. The models I will implement will be able to classify records as either normal TCP network connection data or abnormal TCP network connection data indicative of an attack.
 
 # %% [markdown]
 # *In addition to the general submission rules and grading, include the websites where the software and complete dataset can be downloaded.*  
@@ -39,7 +39,7 @@ print(dataset["labels"].value_counts())
 print(dataset.info())
 
 # %% [markdown]
-# All values in the dataset are currently stored as objects and will be converted into integers, floats, or strings based on the appropriate datatype for easier processing.
+# All values in the dataset are stored as objects and will be converted into integers, floats, or strings based on the appropriate data type for easier processing.
 
 # %%
 for col in dataset.columns:
@@ -49,6 +49,13 @@ for col in dataset.columns:
         dataset[col] = dataset[col].apply(lambda x: x.decode("utf-8"))
         dataset[col] = dataset[col].astype("string")
 
+print(dataset.info())
+
+# %% [markdown]
+# While the entire dataset provides valuable information to improve the accuracy of the models, it is too large and slows down training significantly. To improve training times, the dataset will be reduced to 10% of the size while preserving the class proportions through stratification based on their labels.
+
+# %%
+dataset = dataset.groupby("labels", group_keys=False).apply(lambda x: x.sample(frac=0.1, random_state=42)).reset_index(drop=True)
 print(dataset.info())
 
 # %% [markdown]
@@ -99,8 +106,7 @@ print("Attack Entries: {}, Normal Entries: {}, Total Entries: {}".format(ydf.val
 print("Attack Entries: {:.2f}%, Normal Entries: {:.2f}%".format(ydf.value_counts()[1] / ydf.count() * 100, ydf.value_counts()[0] / ydf.count() * 100))
 
 # %% [markdown]
-# To overcome this imbalance in data, either the normal data could be over-sampled or the attack data could be under-sampled. While these options would balance the dataset, the data mining techniques used in this project are able to effectively work with small imbalances in data and neither of these approaches are necessary to achieve high model performance. In the real world, it is likely that an imbalance in the data would exist as well, and thus the small imbalance has been disregarded.  
-# To ensure that the classes are proportionally utilized during training and testing, a stratified sampling approach will be used during the k-fold cross validation.
+# To overcome this imbalance in data, either the normal data could be over-sampled or the attack data could be under-sampled. While these options would balance the dataset, the data mining techniques used in this project are able to effectively work with small imbalances in data and neither of these approaches are necessary to achieve high model performance. In the real world, it is likely that an imbalance in the data would exist as well, and thus the small imbalance has been disregarded. To ensure that the classes are proportionally utilized during training and testing, a stratified sampling approach will be used during the k-fold cross validation.
 
 # %% [markdown]
 # To visualize the correlation of the variables, a correlation matrix is used. This will help to identify data for dimensional reduction.
@@ -140,14 +146,9 @@ plt.ylabel("Features")
 plt.show()
 
 # %% [markdown]
-# The variables in the modified dataset are visualized to demonstrate the distribution of values for each feature.
-
-# %%
-xdf.hist(figsize=(20, 30))
-plt.show()
-
-# %% [markdown]
 # *The performance metrics must be calculated manually. You may use “confusion_matrix” library to get TP, TN, FP, FN ONLY, then calculate the FPR, FNR, etc.… using the formulas from the slides.*  
+# 
+# The following performance metrics are calculated by the getMetrics function: True Positive, True Negative, False Positive, False Negative, Positive, Negative, True Positive Rate, True Negative Rate, False Positive Rate, False Negative Rate, Recall/ Sensitivity, Precision, F1 Score, Accuracy, Error Rate, Balanced Accuracy, True Skill Statistics, Heidke Skill Score, Specificity, Negative Predictive Value, False Discovery Rate, Brier Score, Brier Skill Score, and the Area Under ROC Curve. Each performance metric is manually calculated using only the True Positive, True Negative, False Positive, and False Negative values from the confusion matrix, except for the Brier Score and the AUC which utilize a library for calculation. The getMetrics function will be called to evaluate the performance of each model after training.
 # 
 # **The professor has made the exception that both the Brier Score and the AUC can be calculated using a library**
 
@@ -203,19 +204,19 @@ def getMetrics(yTest, yPred, yProb):
 
 # %% [markdown]
 # *Implement 3 different classification algorithms in Python. One of them is Random Forest*  
-# In the below section, I have implemented the Random Forest Classifier using the Scikit-learn library.  
+# I have implemented the Random Forest Classifier using the Scikit-learn library.  
 # 
 # *The second one is from the deep learning list in the “Appendix → Additional Option: Deep Learning”*  
-# In the below section, I have selected and implemented the Convolutional 1D network using the Keras library.  
+# I have selected and implemented the Convolutional 1D network using the Keras library.  
 # 
 # *The third is from the list of algorithms in “Appendix → Additional Option: Algorithms”*  
-# In the below section, I have selected the naive Bayes algorithm using the Scikit-learn library. This implementation comes as a result of previous attempts with an SVM taking multiple hours to train and being unable to complete training effectively.
+# I have selected and implemented the naive Bayes algorithm using the Scikit-learn library. This implementation comes as a result of previous attempts with an SVM taking multiple hours to train and being unable to complete training effectively.
 # 
 # *This is not from scratch implementation, just use the existing libraries to implement the algorithms*  
 # 
 # *In evaluating classification performance, students must use the 10-fold cross validation method. You must show the statistics as discussed in the “Evaluating Classifiers”
 # module to include all parameters that were introduced: TP, TF, FP, FN, TSS, HSS, etc... for each run of the 10-folds and also for overall as an average of all 10-folds execution.*  
-# The above defined getMetrics function I have written is used to calculate the statistics discussed in the "Evaluating Classifiers" module for each run of the 10 folds and also for the overall as an average of the 10 folds. Each of the three models identified are run on the same dataset.
+# The getMetrics function I have written is used to calculate the statistics discussed in the "Evaluating Classifiers" module for each run of the 10 folds and also for the overall as an average of the 10 folds. Each of the three models identified are run on the same dataset.
 # 
 # *You must present experimental results that show the comparison of classification performance between the algorithms used in your project.*  
 # The experimental results for each of the three classification methods used in this project are captured in their respective data frames for comparison.
@@ -226,12 +227,14 @@ import keras
 from keras.layers import Conv1D, MaxPooling1D, Flatten, Dense
 from sklearn.naive_bayes import GaussianNB
 from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.svm import SVC
 
 xArr = xdf.values
 yArr = ydf.values
 
 #Create calculated metrics dataframes for storage
-colNames = ["True Positve", "True Negative", "False Positive", "False Negative", "Positive", "Negative", "True Positive Rate", "True Negative Rate", "False Positive Rate", "False Negative Rate", "Recall/ Sensitivity", "Precision", "F1 Score", "Accuracy", "Error Rate", "Balanced Accuracy", "True Skill Statistics", "Heidke Skill Score", "Specificity", "Negative Predictive Value", "False Discovery Rate", "Brier Score", "Brier Skill Score", "Area Under ROC Curve"]
+colNames = ["True Positive", "True Negative", "False Positive", "False Negative", "Positive", "Negative", "True Positive Rate", "True Negative Rate", "False Positive Rate", "False Negative Rate", "Recall/ Sensitivity", "Precision", "F1 Score", "Accuracy", "Error Rate", "Balanced Accuracy", "True Skill Statistics", "Heidke Skill Score", "Specificity", "Negative Predictive Value", "False Discovery Rate", "Brier Score", "Brier Skill Score", "Area Under ROC Curve"]
 rfcMetrics = pd.DataFrame(columns=colNames)
 convMetrics = pd.DataFrame(columns=colNames)
 nbMetrics = pd.DataFrame(columns=colNames)
@@ -296,6 +299,11 @@ for fold in range(k):
     xTrain = scaler.fit_transform(xTrain)
     xTest = scaler.transform(xTest)
 
+    #The dimensionalirt is reduced to speed up execution time. For classification, it is best to use the square root of the number of features
+    pca = PCA(n_components=int(np.sqrt(xTrain.shape[1])))
+    xTrain = pca.fit_transform(xTrain)
+    xTest = pca.transform(xTest)
+
     #Reshape to work with Conv 1D network
     xTrainSteps = xTrain.reshape((xTrain.shape[0], 1, xTrain.shape[1]))
     xTestSteps = xTest.reshape((xTest.shape[0], 1, xTest.shape[1]))
@@ -303,20 +311,21 @@ for fold in range(k):
     #Create and test each model
 
     #Random Forest
-    rfcModel = RandomForestClassifier(n_estimators = 100, random_state=42)
+    rfcModel = RandomForestClassifier(n_estimators=50, random_state=42)
     rfcModel.fit(xTrain, yTrain)
 
-    #Convolutional 1D Network
+    keras.utils.set_random_seed(42)
+
+    #Convolutional 1D Network    
     convModel = keras.models.Sequential()
+    convModel.add(Conv1D(filters=16, kernel_size=1, activation="relu"))
+    convModel.add(MaxPooling1D(pool_size=1))
     convModel.add(Conv1D(filters=32, kernel_size=1, activation="relu"))
-    convModel.add(MaxPooling1D(pool_size=1))
-    convModel.add(Conv1D(filters=64, kernel_size=1, activation="relu"))
-    convModel.add(MaxPooling1D(pool_size=1))
     convModel.add(Flatten())
-    convModel.add(Dense(64, activation="relu"))
+    convModel.add(Dense(32, activation="relu"))
     convModel.add(Dense(1, activation="sigmoid"))
     convModel.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
-    convModel.fit(xTrainSteps, yTrain, epochs=10, batch_size=32, validation_split=0.1)
+    convModel.fit(xTrainSteps, yTrain, epochs=2, batch_size=128, validation_split=0.2)
 
     #Naive Bayes
     nbModel = GaussianNB()
@@ -339,11 +348,11 @@ convMetrics.loc["Average"] =  convMetrics.mean()
 nbMetrics.loc["Average"] =  nbMetrics.mean()
 
 # %% [markdown]
-# The counts of positive and negative identifications should be whole numbers represented as integers, and are updated as such in the section below.
+# The counts of positive and negative identifications should be whole numbers represented as integers, and are updated as such.
 
 # %%
 #convert whole numbers back to ints
-intCols = ["True Positve", "True Negative", "False Positive", "False Negative", "Positive", "Negative"]
+intCols = ["True Positive", "True Negative", "False Positive", "False Negative", "Positive", "Negative"]
 rfcMetrics[intCols] = rfcMetrics[intCols].astype(int)
 convMetrics[intCols] = convMetrics[intCols].astype(int)
 nbMetrics[intCols] = nbMetrics[intCols].astype(int)
@@ -353,7 +362,7 @@ nbMetrics[intCols] = nbMetrics[intCols].astype(int)
 # The three sections below display the results of the metrics in a tabular format listing all details for each fold and the average for each model.
 
 # %% [markdown]
-# The below section provides a tabular view of the metrics from the Random Forest Classifier.
+# This section provides a tabular view of the metrics from the Random Forest Classifier.
 
 # %%
 #Display random forest classifier performance metrics
@@ -366,14 +375,14 @@ pd.set_option('display.expand_frame_repr', False)  #Prevent line-wrapping
 display(rfcMetrics)
 
 # %% [markdown]
-# The below section provides a tabular view of the metrics from the Convolutional 1D network.
+# This section provides a tabular view of the metrics from the Convolutional 1D network.
 
 # %%
 #Display convolutional 1D network classifier performance metrics
 display(convMetrics)
 
 # %% [markdown]
-# The below section provides a tabular view of the metrics from the naive Bayes algorithm.
+# This section provides a tabular view of the metrics from the naive Bayes algorithm.
 
 # %%
 #Display naive bayes performance metrics
@@ -381,7 +390,7 @@ display(nbMetrics)
 
 # %% [markdown]
 # *Provide a discussion about your results. Which algorithm performs better and why? Justify your answer.*  
-# The code below identifies the best performance metrics and the model from which these results originated. Some metrics are optimized by selecting the maximum score, and others are optimized by selecting the minimum score. The results for all metrics are displayed for easy evaluation of the best models. A discussion of the models and results is also provided below.
+# The best performance metrics are identified as well as the model from which these results originated. Some metrics are optimized by selecting the maximum score, and others are optimized by selecting the minimum score. The results for all metrics are displayed for easy evaluation of the best models. A discussion of the models and results is also provided.
 
 # %%
 maxList = ["True Positive Rate", "True Negative Rate", "Recall/ Sensitivity", "Precision", "F1 Score", "Accuracy", "Balanced Accuracy", "True Skill Statistics", "Heidke Skill Score", "Specificity", "Negative Predictive Value", "Brier Skill Score", "Area Under ROC Curve"]
