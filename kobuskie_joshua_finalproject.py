@@ -299,8 +299,8 @@ for fold in range(k):
     xTrain = scaler.fit_transform(xTrain)
     xTest = scaler.transform(xTest)
 
-    #The dimensionalirt is reduced to speed up execution time. For classification, it is best to use the square root of the number of features
-    pca = PCA(n_components=int(np.sqrt(xTrain.shape[1])))
+    #The dimensionality is reduced to speed up execution time. With 10 components, we capture over 20% of the variance and see deminishing returns
+    pca = PCA(n_components=10)
     xTrain = pca.fit_transform(xTrain)
     xTest = pca.transform(xTest)
 
@@ -371,6 +371,12 @@ from IPython.display import display
 #Set display options to prevent truncation
 pd.set_option('display.max_columns', None)  #Show all columns
 pd.set_option('display.expand_frame_repr', False)  #Prevent line-wrapping
+
+################################
+################################
+#USE TABULATE INSTEAD OF DISPLAY
+################################
+################################
 
 display(rfcMetrics)
 
