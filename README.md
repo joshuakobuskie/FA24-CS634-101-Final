@@ -4,9 +4,9 @@
 
 This project contains 3 main files:
 
-The project itself (kobuskie_joshua_finalproject.py)
-The Jupyter notebook that contains the project and more visual output (kobuskie_joshua_finalproject.ipynb)
-A detailed report that captures the findings of the project (kobuskie_joshua_finalproject_report.pdf)
+- The project itself (kobuskie_joshua_finalproject.py)
+- The Jupyter notebook that contains the project and more visual output (kobuskie_joshua_finalproject.ipynb)
+- A detailed report that captures the findings of the project (kobuskie_joshua_finalproject_report.pdf)
 
 Please install python 3.12.2 or higher and the latest version of keras, matplotlib, numpy, pandas, scikit_learn, and seaborn prior to running this program. The minimum version requirements are included in the requirements.txt document.  
 
