@@ -111,6 +111,7 @@ ydf = dataset.loc[:, "labels"]
 print("#################### Checking for Data Imbalance ####################")
 print("Attack Entries: {}, Normal Entries: {}, Total Entries: {}".format(ydf.value_counts()[1], ydf.value_counts()[0], ydf.count()))
 print("Attack Entries: {:.2f}%, Normal Entries: {:.2f}%".format(ydf.value_counts()[1] / ydf.count() * 100, ydf.value_counts()[0] / ydf.count() * 100))
+print()
 
 # %% [markdown]
 # To overcome this imbalance in data, either the normal data could be over-sampled or the attack data could be under-sampled. While these options would balance the dataset, the data mining techniques used in this project are able to effectively work with small imbalances in data and neither of these approaches are necessary to achieve high model performance. In the real world, it is likely that an imbalance in the data would exist as well, and thus the small imbalance has been disregarded. To ensure that the classes are proportionally utilized during training and testing, a stratified sampling approach will be used during the k-fold cross validation.
@@ -344,6 +345,7 @@ for fold in range(k):
     rfcMetrics.loc[len(rfcMetrics.index)] = getMetrics(yTest, rfcModel.predict(xTest), rfcModel.predict_proba(xTest)[:, 1])
     convMetrics.loc[len(convMetrics.index)] = getMetrics(yTest, (convModel.predict(xTestSteps) >= 0.5).astype(int), convModel.predict(xTestSteps))
     nbMetrics.loc[len(nbMetrics.index)] = getMetrics(yTest, nbModel.predict(xTest), nbModel.predict_proba(xTest)[:, 1])
+    print()
 
 # %% [markdown]
 # *You must show the statistics as discussed in the “Evaluating Classifiers” module to include all parameters that were introduced for each run of the 10-folds and also for overall as an average of all 10-folds execution*  
@@ -378,21 +380,27 @@ pd.set_option("display.max_columns", None)  #Show all columns
 pd.set_option("display.expand_frame_repr", False)  #Prevent line-wrapping
 pd.set_option("display.width", None) #Detect display size
 
+print("Random Forest Classifier Performance Metrics")
 print(rfcMetrics)
+print()
 
 # %% [markdown]
 # This section provides a tabular view of the metrics from the Convolutional 1D network.
 
 # %%
 #Display convolutional 1D network classifier performance metrics
+print("Convolutional 1D Network Classifier Performance Metrics")
 print(convMetrics)
+print()
 
 # %% [markdown]
 # This section provides a tabular view of the metrics from the naive Bayes algorithm.
 
 # %%
 #Display naive bayes performance metrics
+print("Naive Bayes Classifier Performance Metrics")
 print(nbMetrics)
+print()
 
 # %% [markdown]
 # *Provide a discussion about your results. Which algorithm performs better and why? Justify your answer.*  
