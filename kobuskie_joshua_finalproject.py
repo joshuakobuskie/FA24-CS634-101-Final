@@ -2,6 +2,7 @@
 # # NJIT Fall 2024 CS634: Data Mining Final Project #
 # ## Joshua Kobuskie ##
 # ### November 17, 2024 ###
+print("CS634-101 Data Mining: Binary Classification Final Project - Joshua Kobuskie\n\n")
 
 # %% [markdown]
 # ##### Supervised Data Mining (Classification) Binary Classification Only #####
